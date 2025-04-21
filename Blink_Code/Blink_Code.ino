@@ -26,16 +26,30 @@
 
 
 int BlueLED = 12;
+int RedLED = 11;
+
+int del = 250;
+
 
 void setup() {
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(BlueLED, OUTPUT);
+  pinMode(RedLED, OUTPUT);
 }
 
 // the loop function runs over and over again forever
 void loop() {
-  digitalWrite(BlueLED, HIGH);  // turn the LED on (HIGH is the voltage level)
-  delay(3000);                      // wait for a second
+  digitalWrite(BlueLED, HIGH);  // turn the LED on (HIGH is the voltage level)                     
+  digitalWrite(RedLED, LOW);   // turn the LED off by making the voltage LOW
+  delay(del); // wait 
+
   digitalWrite(BlueLED, LOW);   // turn the LED off by making the voltage LOW
-  delay(500);                      // wait for a second
+  digitalWrite(RedLED, HIGH);  // turn the LED on (HIGH is the voltage level)
+  delay(del);                      // wait 
+
+  del -= 10;
+
+  if (del == 100){
+    del = 300;
+  }
 }
