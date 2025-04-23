@@ -20,7 +20,10 @@ int White = 6;
 int Green = 5;
 
 int brightness = 0;  // how bright the LED i/s
+int OpBrigh = 255;
+
 int fadeAmount = 5;  // how many points to fade the LED by
+int fadeOpAm = -5;
 
 // the setup routine runs once when you press reset:
 void setup() {
@@ -35,18 +38,22 @@ void setup() {
 // the loop routine runs over and over again forever:
 void loop() {
   // set the brightness of pin 9:
-  analogWrite(Red, brightness);
+  analogWrite(Red, OpBrigh);
   analogWrite(Blue, brightness);
-  analogWrite(Yellow, brightness);
+  analogWrite(Yellow, OpBrigh);
   analogWrite(White, brightness);
-  analogWrite(Green, brightness);
+  analogWrite(Green, OpBrigh);
+ 
 
   // change the brightness for next time through the loop:
   brightness = brightness + fadeAmount;
+  OpBrigh = OpBrigh + fadeOpAm;
 
   // reverse the direction of the fading at the ends of the fade:
   if (brightness <= 0 || brightness >= 255) {
     fadeAmount = -fadeAmount;
+    fadeOpAm = -fadeOpAm;
+    delay(250);
   }
 
 
