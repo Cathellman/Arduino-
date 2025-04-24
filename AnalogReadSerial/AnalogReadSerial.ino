@@ -11,9 +11,17 @@
 */
 
 // the setup routine runs once when you press reset:
+
+int OneLED = 11;
+int TwoLED = 10;
+int value = 0;
+
 void setup() {
   // initialize serial communication at 9600 bits per second:
   Serial.begin(9600);
+  pinMode(TwoLED, OUTPUT);
+  pinMode(OneLED, OUTPUT);
+  
 }
 
 // the loop routine runs over and over again forever:
@@ -21,6 +29,9 @@ void loop() {
   // read the input on analog pin 0:
   int sensorValue = analogRead(A0);
   // print out the value you read:
+  value = sensorValue * 0.3;
+  analogWrite(OneLED, value);
+  analogWrite(TwoLED, value);
   Serial.println(sensorValue);
   delay(1);  // delay in between reads for stability
 }
