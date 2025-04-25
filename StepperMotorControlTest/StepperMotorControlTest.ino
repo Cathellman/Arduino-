@@ -1,31 +1,33 @@
-// Define pin connections & motor steps per revolution
+// Include the AccelStepper Library
+#include <AccelStepper.h>
+
+// Define pin connections
 const int dirPin = 2;
 const int stepPin = 3;
-const int stepsPerRevolution = 900;
+
+// Define motor interface type
+#define motorInterfaceType 1
+
+// Creates an instance
+AccelStepper myStepper(motorInterfaceType, stepPin, dirPin);
+
 void setup() {
-  // Declare pins as Outputs
-  pinMode(stepPin, OUTPUT);
-  pinMode(dirPin, OUTPUT);
+	// set the maximum speed, acceleration factor,
+	// initial speed and the target position
+	myStepper.setMaxSpeed(2000);
+	myStepper.setAcceleration(500);
+	myStepper.setSpeed(2000);
+	myStepper.moveTo(200);
+  Serial.begin(9600);
 }
+
 void loop() {
-  // Set motor direction clockwise
-  digitalWrite(dirPin, HIGH);
-  // Spin motor slowly
-  for(int x = 0; x < stepsPerRevolution; x++) {
-    digitalWrite(stepPin, HIGH);
-    delayMicroseconds(500);
-    digitalWrite(stepPin, LOW);
-    delayMicroseconds(500);
-  }
-  delay(1000); // Wait a second
-  // Set motor direction counterclockwise
-  digitalWrite(dirPin, LOW);
-  // Spin motor quickly
-  for(int x = 0; x < stepsPerRevolution; x++) {
-    digitalWrite(stepPin, HIGH);
-    delayMicroseconds(500);
-    digitalWrite(stepPin, LOW);
-    delayMicroseconds(500);
-  }
-  delay(500); // Wait a second
+	// Change direction once the motor reaches target position
+  
+	if (myStepper.distanceToGo() == 0) 
+		myStepper.moveTo(-myStepper.currentPosition());
+
+	// Move the motor one step
+	myStepper.run();
+  Serial.println(myStepper.currentPosition());
 }
