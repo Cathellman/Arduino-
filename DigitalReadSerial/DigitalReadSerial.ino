@@ -1,30 +1,53 @@
-// Pin setup
-const int xAxis = A0;
-const int yAxis = A1;
-const int buttonPin = 2;    // Joystick push button
-const int togglePin = 3;    // Button to simulate "mouse toggle" (logic only)
+/*
+ * Created by ArduinoGetStarted.com
+ *
+ * This example code is in the public domain
+ *
+ * Tutorial page: https://arduinogetstarted.com/tutorials/arduino-joystick
+ */
 
-bool controlActive = false;
+#include <ezButton.h>
 
+#define VRX_PIN  A1 // Arduino pin connected to VRX pin
+#define VRY_PIN  A0 // Arduino pin connected to VRY pin
+#define SW_PIN   2  // Arduino pin connected to SW  pin
+
+ezButton button(SW_PIN);
+
+int xValue = 0; // To store value of the X axis
+int yValue = 0; // To store value of the Y axis
+int bValue = 0; // To store value of the button
 
 void setup() {
-  Serial.begin(9600);
-  pinMode(buttonPin, INPUT_PULLUP);  // Use internal pull-up resistor
-  pinMode(togglePin, INPUT_PULLUP);
+  Serial.begin(9600) ;
+  button.setDebounceTime(300); // set debounce time to 50 milliseconds
 }
 
 void loop() {
-  // Read joystick
-  bool x = analogRead(xAxis);
-  bool y = analogRead(yAxis);
-  bool pressed = digitalRead(buttonPin) == LOW;
+  button.loop(); // MUST call the loop() function first
 
-  // Print values to Serial Monitor
-  Serial.print("X: "); Serial.print(x);
-  Serial.print("  Y: "); Serial.print(y);
-  Serial.print("  Button: "); Serial.print(pressed ? "PRESSED" : "RELEASED");
-  Serial.print("  | Control Active: ");
-  Serial.println(controlActive ? "YES" : "NO");
+  // read analog X and Y analog values
+  yValue = -analogRead(VRX_PIN);
+  xValue = -analogRead(VRY_PIN);
 
-  delay(100);  // Update every 100 ms
+  // Read the button value
+  bValue = button.getState();
+
+  if (button.isPressed()) {
+    Serial.println("The button is pressed");
+    // TODO do something here
+  }
+
+  if (button.isReleased()) {
+    Serial.println("The button is released");
+    // TODO do something here
+  }
+
+  // print data to Serial Monitor on Arduino IDE
+  Serial.print("x = ");
+  Serial.print(xValue);
+  Serial.print(", y = ");
+  Serial.print(yValue);
+  Serial.print(" : button = ");
+  Serial.println(bValue);
 }
