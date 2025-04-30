@@ -1,11 +1,11 @@
 // Pin setup
 const int xAxis = A0;
 const int yAxis = A1;
-const int buttonPin = 3;    // Joystick push button
-const int togglePin = 2;    // Button to simulate "mouse toggle" (logic only)
+const int buttonPin = 2;    // Joystick push button
+const int togglePin = 3;    // Button to simulate "mouse toggle" (logic only)
 
 bool controlActive = false;
-int lastToggleState = LOW;
+
 
 void setup() {
   Serial.begin(9600);
@@ -14,19 +14,9 @@ void setup() {
 }
 
 void loop() {
-  // Handle control toggle (simulated "mouse on/off")
-  int toggleState = digitalRead(togglePin);
-  if (toggleState != lastToggleState && toggleState == LOW) {
-    controlActive = !controlActive;
-    Serial.print("Control Active: ");
-    Serial.println(controlActive ? "YES" : "NO");
-    delay(200); // debounce
-  }
-  lastToggleState = toggleState;
-
   // Read joystick
-  int x = analogRead(xAxis);
-  int y = analogRead(yAxis);
+  bool x = analogRead(xAxis);
+  bool y = analogRead(yAxis);
   bool pressed = digitalRead(buttonPin) == LOW;
 
   // Print values to Serial Monitor
