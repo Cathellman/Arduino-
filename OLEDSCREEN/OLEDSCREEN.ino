@@ -39,17 +39,46 @@ static const unsigned char PROGMEM arrow_up_bmp[] = {
   B00000000, B11111111, B00000000,
   B00000000, B11111111, B00000000,
   B00000000, B11111111, B00000000,
-  B00000000, B11111111, B00000000,
-  B00000000, B11111111, B00000000,
-  B00000000, B11111111, B00000000,
-  B00000000, B11111111, B00000000,
-  B00000000, B11111111, B00000000,
-  B00000000, B11111111, B00000000,
-  B00000000, B11111111, B00000000,
-  B00000000, B11111111, B00000000,
-  B00000000, B11111111, B00000000,
   B00000000, B11111111, B00000000
 };
+
+// 24x32 downward arrow with 8-pixel-wide stem (rows reversed)
+static const unsigned char PROGMEM arrow_down_bmp[] = {
+  B00000000, B11111111, B00000000,
+  B00000000, B11111111, B00000000,
+  B00000000, B11111111, B00000000,
+  B00000000, B11111111, B00000000,
+  B00000000, B11111111, B00000000,
+  B00000000, B11111111, B00000000,
+  B00000000, B11111111, B00000000,
+  B00000000, B11111111, B00000000,
+  B00000000, B11111111, B00000000,
+  B00000000, B11111111, B00000000,
+  B00000000, B11111111, B00000000,
+  B00000000, B11111111, B00000000,
+  B00000000, B11111111, B00000000,
+  B00000000, B11111111, B00000000,
+  B00000000, B11111111, B00000000,
+  B00000000, B11111111, B00000000,
+  B00000000, B11111111, B00000000,
+  B00000000, B11111111, B00000000,
+  B00000000, B11111111, B00000000,
+  B00000000, B11111111, B00000000,
+  B11111111, B11111111, B11111111,
+  B01111111, B11111111, B11111110,
+  B00111111, B11111111, B11111100,
+  B00011111, B11111111, B11111000,
+  B00001111, B11111111, B11110000,
+  B00000111, B11111111, B11100000,
+  B00000011, B11111111, B11000000,
+  B00000001, B11111111, B10000000,
+  B00000000, B11111111, B00000000,
+  B00000000, B01111110, B00000000,
+  B00000000, B00111100, B00000000,
+  B00000000, B00011000, B00000000
+};
+
+int currentArrow = 0;  // 0 = Up, 1 = Down
 
 void setup() {
   Serial.begin(115200);
@@ -59,16 +88,31 @@ void setup() {
   }
 
   display.clearDisplay();
-
-  // Draw the 24x32 arrow centered on the screen
-  display.drawBitmap(
-    (SCREEN_WIDTH - IMAGE_WIDTH) / 2,    // Center horizontally
-    (SCREEN_HEIGHT - IMAGE_HEIGHT) / 2,   // Center vertically
-    arrow_up_bmp, IMAGE_WIDTH, IMAGE_HEIGHT, WHITE);
-
   display.display();
 }
 
 void loop() {
-  // Nothing here
+  // Clear the display before drawing the new arrow
+  display.clearDisplay();
+
+  // Draw the appropriate arrow based on the currentArrow value
+  if (currentArrow == 0) {
+    display.drawBitmap(
+      (SCREEN_WIDTH - IMAGE_WIDTH) / 2,    // Center horizontally
+      (SCREEN_HEIGHT - IMAGE_HEIGHT) / 2,   // Center vertically
+      arrow_up_bmp, IMAGE_WIDTH, IMAGE_HEIGHT, WHITE);
+  } else {
+    display.drawBitmap(
+      (SCREEN_WIDTH - IMAGE_WIDTH) / 2,    // Center horizontally
+      (SCREEN_HEIGHT - IMAGE_HEIGHT) / 2,   // Center vertically
+      arrow_down_bmp, IMAGE_WIDTH, IMAGE_HEIGHT, WHITE);
+  }
+
+  // Update the display
+  display.display();
+  
+  // Switch between arrows every 1 second
+  delay(1000);
+  currentArrow = !currentArrow;  // Toggle between 0 (Up) and 1 (Down)
 }
+
