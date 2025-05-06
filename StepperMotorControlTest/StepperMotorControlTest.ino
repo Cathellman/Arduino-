@@ -1,50 +1,43 @@
-// Include the AccelStepper Library
 #include <AccelStepper.h>
 
-// Define pin connections
+// Define motor interface type (1 = DRIVER: step + dir)
+#define motorInterfaceType 1
+
+// Define pin connections for X and Y axes
 const int XdirPin = 7;
 const int XstepPin = 11;
 
 const int YdirPin = 10;
 const int YstepPin = 6;
 
-// Define motor interface type
-#define motorInterfaceType 1
-#define YmotorinterfaceType 2
-
-
-// Creates an instance
+// Create instances for X and Y motors
 AccelStepper XmyStepper(motorInterfaceType, XstepPin, XdirPin);
-AccelStepper YmyStepper(YmotorinterfaceType, YstepPin, YdirPin);
+AccelStepper YmyStepper(motorInterfaceType, YstepPin, YdirPin);
 
 void setup() {
-	// set the maximum speed, acceleration factor,
-	// initial speed and the target position
-	YmyStepper.setMaxSpeed(2000);
-	YmyStepper.setAcceleration(500);
-	YmyStepper.setSpeed(2000);
-	YmyStepper.moveTo(100);
+  // Setup X motor
+  XmyStepper.setMaxSpeed(1000);
+  XmyStepper.setAcceleration(500);
+  XmyStepper.moveTo(1000); // Target position
 
-	XmyStepper.setMaxSpeed(2000);
-	XmyStepper.setAcceleration(500);
-	XmyStepper.setSpeed(2000);
-	XmyStepper.moveTo(100);
-
+  // Setup Y motor
+  YmyStepper.setMaxSpeed(1000);
+  YmyStepper.setAcceleration(500);
+  YmyStepper.moveTo(1000); // Target position
 }
 
 void loop() {
-	// Change direction once the motor reaches target position
-  
-	if (YmyStepper.distanceToGo() == 0) 
-		YmyStepper.moveTo(-YmyStepper.currentPosition());
+  // If X motor reached target, reverse direction
+  if (XmyStepper.distanceToGo() == 0) {
+    XmyStepper.moveTo(-XmyStepper.currentPosition());
+  }
 
-	// Move the motor one step
+  // If Y motor reached target, reverse direction
+  if (YmyStepper.distanceToGo() == 0) {
+    YmyStepper.moveTo(-YmyStepper.currentPosition());
+  }
 
-	if (XmyStepper.distanceToGo() == 0) 
-		XmyStepper.moveTo(-XmyStepper.currentPosition());
-
-	// Move the motor one step
-	XmyStepper.run();
-	YmyStepper.run();
-
+  // Move motors one step at a time
+  XmyStepper.run();
+  YmyStepper.run();
 }
