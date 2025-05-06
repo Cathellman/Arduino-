@@ -2,32 +2,49 @@
 #include <AccelStepper.h>
 
 // Define pin connections
-const int dirPin = 2;
-const int stepPin = 3;
+const int XdirPin = 7;
+const int XstepPin = 11;
+
+const int YdirPin = 10;
+const int YstepPin = 6;
 
 // Define motor interface type
 #define motorInterfaceType 1
+#define YmotorinterfaceType 2
+
 
 // Creates an instance
-AccelStepper myStepper(motorInterfaceType, stepPin, dirPin);
+AccelStepper XmyStepper(motorInterfaceType, XstepPin, XdirPin);
+AccelStepper YmyStepper(YmotorinterfaceType, YstepPin, YdirPin);
 
 void setup() {
 	// set the maximum speed, acceleration factor,
 	// initial speed and the target position
-	myStepper.setMaxSpeed(2000);
-	myStepper.setAcceleration(500);
-	myStepper.setSpeed(2000);
-	myStepper.moveTo(200);
-  Serial.begin(9600);
+	YmyStepper.setMaxSpeed(2000);
+	YmyStepper.setAcceleration(500);
+	YmyStepper.setSpeed(2000);
+	YmyStepper.moveTo(100);
+
+	XmyStepper.setMaxSpeed(2000);
+	XmyStepper.setAcceleration(500);
+	XmyStepper.setSpeed(2000);
+	XmyStepper.moveTo(100);
+
 }
 
 void loop() {
 	// Change direction once the motor reaches target position
   
-	if (myStepper.distanceToGo() == 0) 
-		myStepper.moveTo(-myStepper.currentPosition());
+	if (YmyStepper.distanceToGo() == 0) 
+		YmyStepper.moveTo(-YmyStepper.currentPosition());
 
 	// Move the motor one step
-	myStepper.run();
-  Serial.println(myStepper.currentPosition());
+
+	if (XmyStepper.distanceToGo() == 0) 
+		XmyStepper.moveTo(-XmyStepper.currentPosition());
+
+	// Move the motor one step
+	XmyStepper.run();
+	YmyStepper.run();
+
 }
