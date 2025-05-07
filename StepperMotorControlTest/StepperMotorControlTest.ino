@@ -4,11 +4,11 @@
 #define motorInterfaceType 1
 
 // Define pin connections for X and Y axes
-const int XdirPin = 7;
-const int XstepPin = 11;
+const int XdirPin = 2;
+const int XstepPin = 3;
 
-const int YdirPin = 10;
-const int YstepPin = 6;
+const int YdirPin = 5;
+const int YstepPin = 4;
 
 // Create instances for X and Y motors
 AccelStepper XmyStepper(motorInterfaceType, XstepPin, XdirPin);
