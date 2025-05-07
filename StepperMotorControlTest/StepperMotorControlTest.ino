@@ -4,36 +4,40 @@
 
 const int XdirPin = 2;
 const int XstepPin = 3;
+const int joystickXPin = A0;
 
-// Create instance
 AccelStepper XmyStepper(motorInterfaceType, XstepPin, XdirPin);
 
-// Define a list of target positions
-long positions[] = {0, 90, 90, 0};
-int numPositions = sizeof(positions) / sizeof(positions[0]);
-int currentIndex = 0;
-
 void setup() {
-  XmyStepper.setMaxSpeed(1000); // Set to safe speed for your motor
-  XmyStepper.setAcceleration(500); // Optional, smoother movement
+  XmyStepper.setMaxSpeed(500);
+  XmyStepper.setAcceleration(250);  // Adjust acceleration for smooth ramp-up
+  pinMode(joystickXPin, INPUT);
 }
 
 void loop() {
-  static bool moving = false;
+  int joystickX = analogRead(joystickXPin);
+  int center = 512;
+  int deadzone = 100; // Increased deadzone for better control
 
-  if (!moving) {
-    XmyStepper.moveTo(positions[currentIndex]);
-    moving = true;
+  int offset = joystickX - center;
+
+  // Apply deadzone
+  if (abs(offset) < deadzone) {
+    XmyStepper.setSpeed(0);
+  } else {
+    // Map the joystick offset to speed with curve
+    int direction = (offset > 0) ? 1 : -1;
+    int distanceFromCenter = abs(offset) - deadzone;
+
+    // Max joystick deflection is (512 - 100) = 412
+    float normalized = distanceFromCenter / 412.0;
+
+    // Apply exponential acceleration curve for smoother start
+    float curvedSpeed = pow(normalized, 3) * 1000; // Exponential curve for acceleration
+
+    // Apply this speed with respect to the joystick direction
+    XmyStepper.setSpeed(curvedSpeed * direction);
   }
 
-  if (moving) {
-    XmyStepper.run();
-    if (XmyStepper.distanceToGo() == 0) {
-      moving = false;
-      currentIndex++;
-      if (currentIndex >= numPositions) {
-        currentIndex = 0; // Loop back to start
-      }
-    }
-  }
+  XmyStepper.runSpeed();
 }
